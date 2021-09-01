@@ -27,7 +27,8 @@ terraform {
 }
 
 provider "kustomization" {
-  # one of kubeconfig_path or kubeconfig_raw is required
+  # if terraform isn't running inside kubernetes,
+  # one of kubeconfig_path or kubeconfig_raw must be set
 
   # kubeconfig_path = "~/.kube/config"
   # can also be set using KUBECONFIG_PATH environment variable
@@ -40,8 +41,8 @@ provider "kustomization" {
 
 ## Argument Reference
 
-- `kubeconfig_path` - (One of `kubeconfig_path` or `kubeconfig_raw` required) Path to a kubeconfig file. Can be set using `KUBECONFIG_PATH` environment variable.
-- `kubeconfig_raw` - (One of `kubeconfig_path` or `kubeconfig_raw` required) Raw kubeconfig file. If `kubeconfig_raw` is set, `kubeconfig_path` is ignored.
+- `kubeconfig_path` - Path to a kubeconfig file. Can be set using `KUBECONFIG_PATH` environment variable.
+- `kubeconfig_raw` - Raw kubeconfig file. If `kubeconfig_raw` is set, `kubeconfig_path` is ignored.
 - `context` - (Optional) Context to use in kubeconfig with multiple contexts, if not specified the default context is used.
 
 ## Imports

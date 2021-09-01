@@ -3,6 +3,7 @@ package kustomize
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -44,17 +45,15 @@ func Provider() *schema.Provider {
 
 		Schema: map[string]*schema.Schema{
 			"kubeconfig_path": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				DefaultFunc:  schema.EnvDefaultFunc("KUBECONFIG_PATH", nil),
-				ExactlyOneOf: []string{"kubeconfig_path", "kubeconfig_raw"},
-				Description:  fmt.Sprintf("Path to a kubeconfig file. Can be set using KUBECONFIG_PATH env var. Either kubeconfig_path or kubeconfig_raw is required."),
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("KUBECONFIG_PATH", nil),
+				Description: fmt.Sprintf("Path to a kubeconfig file. Can be set using KUBECONFIG_PATH env var."),
 			},
 			"kubeconfig_raw": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ExactlyOneOf: []string{"kubeconfig_path", "kubeconfig_raw"},
-				Description:  "Raw kube config. If kubeconfig_raw is set, kubeconfig_path is ignored.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Raw kube config. If kubeconfig_raw is set, kubeconfig_path is ignored.",
 			},
 			"context": {
 				Type:        schema.TypeString,
@@ -89,6 +88,13 @@ func Provider() *schema.Provider {
 			config, err = getClientConfig(data, context)
 			if err != nil {
 				return nil, fmt.Errorf("provider kustomization: kubeconfig_path: %s", err)
+			}
+		}
+
+		if raw == "" && path == "" && os.Getenv("KUBERNETES_SERVICE_HOST") != "" && os.Getenv("KUBERNETES_SERVICE_PORT") != "" {
+			config, err = rest.InClusterConfig()
+			if err != nil {
+				return nil, fmt.Errorf("provider kustomization: couldn't load in cluster config: %s", err)
 			}
 		}
 
