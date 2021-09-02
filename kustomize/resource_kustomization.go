@@ -138,7 +138,10 @@ func kustomizationResourceCreate(d *schema.ResourceData, m interface{}) error {
 	id := string(resp.GetUID())
 	d.SetId(id)
 
-	d.Set("manifest", getLastAppliedConfig(resp))
+	// ensure that manifest definitely ends in one and only one newline
+	manifest := fmt.Sprintf("%s\n", strings.TrimRight(getLastAppliedConfig(resp), "\r\n"))
+
+	d.Set("manifest", manifest)
 
 	return kustomizationResourceRead(d, m)
 }
@@ -175,7 +178,10 @@ func kustomizationResourceRead(d *schema.ResourceData, m interface{}) error {
 	id := string(resp.GetUID())
 	d.SetId(id)
 
-	d.Set("manifest", getLastAppliedConfig(resp))
+	// ensure that manifest definitely ends in one and only one newline
+	manifest := fmt.Sprintf("%s\n", strings.TrimRight(getLastAppliedConfig(resp), "\r\n"))
+
+	d.Set("manifest", manifest)
 
 	return nil
 }
@@ -365,7 +371,10 @@ func kustomizationResourceUpdate(d *schema.ResourceData, m interface{}) error {
 	id := string(patchResp.GetUID())
 	d.SetId(id)
 
-	d.Set("manifest", getLastAppliedConfig(patchResp))
+	// ensure that manifest definitely ends in one and only one newline
+	manifest := fmt.Sprintf("%s\n", strings.TrimRight(getLastAppliedConfig(patchResp), "\r\n"))
+
+	d.Set("manifest", manifest)
 
 	return kustomizationResourceRead(d, m)
 }
@@ -481,13 +490,13 @@ func kustomizationResourceImport(d *schema.ResourceData, m interface{}) ([]*sche
 	id := string(resp.GetUID())
 	d.SetId(id)
 
-	lac := getLastAppliedConfig(resp)
+	// ensure that manifest definitely ends in one and only one newline
+	lac := fmt.Sprintf("%s\n", strings.TrimRight(getLastAppliedConfig(resp), "\r\n"))
 	if lac == "" {
 		return nil, logError(
 			fmt.Errorf("apiVersion: %q, kind: %q, namespace: %q, name: %q: can not import resources without %q annotation", gvk.GroupVersion(), gvk.Kind, namespace, name, lastAppliedConfig),
 		)
 	}
-
 	d.Set("manifest", lac)
 
 	return []*schema.ResourceData{d}, nil
