@@ -64,8 +64,8 @@ func TestAccResourceKustomization_basic(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"~G_v1_Namespace|~X|test-basic\"]",
-				ImportStateId:     "~G_v1_Namespace|~X|test-basic",
+				ResourceName:      "kustomization_resource.test[\"~G_~V_Namespace|~X|test-basic\"]",
+				ImportStateId:     "~G_~V_Namespace|~X|test-basic",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -76,15 +76,15 @@ func TestAccResourceKustomization_basic(t *testing.T) {
 func testAccResourceKustomizationConfig_basicInitial(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-basic"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-basic"]
 }
 
 resource "kustomization_resource" "svc" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Service|test-basic|test"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Service|test-basic|test"]
 }
 
 resource "kustomization_resource" "dep1" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-basic|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-basic|test"]
 }
 `
 }
@@ -92,7 +92,7 @@ resource "kustomization_resource" "dep1" {
 func testAccResourceKustomizationConfig_basicModified(path string) string {
 	return testAccResourceKustomizationConfig_basicInitial(path) + `
 resource "kustomization_resource" "dep2" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-basic|test2"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-basic|test2"]
 }
 `
 }
@@ -110,11 +110,11 @@ func TestAccResourceKustomization_importInvalidID(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"~G_v1_Namespace|~X|test-basic\"]",
+				ResourceName:      "kustomization_resource.test[\"~G_~V_Namespace|~X|test-basic\"]",
 				ImportStateId:     "invalidID",
 				ImportState:       true,
 				ImportStateVerify: true,
-				ExpectError:       regexp.MustCompile("invalid ID: \"invalidID\", valid IDs look like: \"~G_v1_Namespace|~X|example\""),
+				ExpectError:       regexp.MustCompile("invalid ID: \"invalidID\", valid IDs look like: \"~G_~V_Namespace|~X|example\""),
 			},
 		},
 	})
@@ -172,8 +172,8 @@ func TestAccResourceKustomization_updateInplace(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"~G_v1_Namespace|~X|test-update-inplace\"]",
-				ImportStateId:     "~G_v1_Namespace|~X|test-update-inplace",
+				ResourceName:      "kustomization_resource.test[\"~G_~V_Namespace|~X|test-update-inplace\"]",
+				ImportStateId:     "~G_~V_Namespace|~X|test-update-inplace",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -184,15 +184,15 @@ func TestAccResourceKustomization_updateInplace(t *testing.T) {
 func testAccResourceKustomizationConfig_updateInplace(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-update-inplace"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-update-inplace"]
 }
 
 resource "kustomization_resource" "svc" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Service|test-update-inplace|test"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Service|test-update-inplace|test"]
 }
 
 resource "kustomization_resource" "dep1" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-update-inplace|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-update-inplace|test"]
 }
 `
 }
@@ -235,15 +235,15 @@ func TestAccResourceKustomization_updateMergeFallback(t *testing.T) {
 func testAccResourceKustomizationConfig_updateMergeFallbackInitial(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-update-merge-fallback"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-update-merge-fallback"]
 }
 
 resource "kustomization_resource" "svc" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Service|test-update-merge-fallback|test"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Service|test-update-merge-fallback|test"]
 }
 
 resource "kustomization_resource" "dep" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-update-merge-fallback|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-update-merge-fallback|test"]
 }
 `
 }
@@ -251,7 +251,7 @@ resource "kustomization_resource" "dep" {
 func testAccResourceKustomizationConfig_updateMergeFallbackModified(path string) string {
 	return testAccResourceKustomizationConfig_updateMergeFallbackInitial(path) + `
 resource "kustomization_resource" "cm" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_ConfigMap|test-update-merge-fallback|test-envfrom-kmdg664296"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_ConfigMap|test-update-merge-fallback|test-envfrom-kmdg664296"]
 }
 `
 }
@@ -304,8 +304,8 @@ func TestAccResourceKustomization_updateRecreate(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"~G_v1_Namespace|~X|test-update-recreate\"]",
-				ImportStateId:     "~G_v1_Namespace|~X|test-update-recreate",
+				ResourceName:      "kustomization_resource.test[\"~G_~V_Namespace|~X|test-update-recreate\"]",
+				ImportStateId:     "~G_~V_Namespace|~X|test-update-recreate",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -316,15 +316,15 @@ func TestAccResourceKustomization_updateRecreate(t *testing.T) {
 func testAccResourceKustomizationConfig_updateRecreate(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-update-recreate"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-update-recreate"]
 }
 
 resource "kustomization_resource" "svc" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Service|test-update-recreate|test"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Service|test-update-recreate|test"]
 }
 
 resource "kustomization_resource" "dep1" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-update-recreate|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-update-recreate|test"]
 }
 `
 }
@@ -364,11 +364,11 @@ func TestAccResourceKustomization_updateRecreateStatefulSet(t *testing.T) {
 func testAccResourceKustomizationConfig_updateRecreateStatefulSet(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-update-recreate-statefulset"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-update-recreate-statefulset"]
 }
 
 resource "kustomization_resource" "ss" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_StatefulSet|test-update-recreate-statefulset|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_StatefulSet|test-update-recreate-statefulset|test"]
 }
 `
 }
@@ -433,8 +433,8 @@ func TestAccResourceKustomization_crd(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"apiextensions.k8s.io_v1_CustomResourceDefinition|~X|clusteredcrds.test.example.com\"]",
-				ImportStateId:     "apiextensions.k8s.io_v1_CustomResourceDefinition|~X|clusteredcrds.test.example.com",
+				ResourceName:      "kustomization_resource.test[\"apiextensions.k8s.io_~V_CustomResourceDefinition|~X|clusteredcrds.test.example.com\"]",
+				ImportStateId:     "apiextensions.k8s.io_~V_CustomResourceDefinition|~X|clusteredcrds.test.example.com",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -445,23 +445,23 @@ func TestAccResourceKustomization_crd(t *testing.T) {
 func testAccResourceKustomizationConfig_crd(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "clusteredcrd" {
-	manifest = data.kustomization_build.test.manifests["apiextensions.k8s.io_v1_CustomResourceDefinition|~X|clusteredcrds.test.example.com"]
+	manifest = data.kustomization_build.test.manifests["apiextensions.k8s.io_~V_CustomResourceDefinition|~X|clusteredcrds.test.example.com"]
 }
 
 resource "kustomization_resource" "namespacedcrd" {
-	manifest = data.kustomization_build.test.manifests["apiextensions.k8s.io_v1_CustomResourceDefinition|~X|namespacedcrds.test.example.com"]
+	manifest = data.kustomization_build.test.manifests["apiextensions.k8s.io_~V_CustomResourceDefinition|~X|namespacedcrds.test.example.com"]
 }
 
 resource "kustomization_resource" "clusteredco" {
-	manifest = data.kustomization_build.test.manifests["test.example.com_v1alpha1_Clusteredcrd|~X|clusteredco"]
+	manifest = data.kustomization_build.test.manifests["test.example.com_~V_Clusteredcrd|~X|clusteredco"]
 }
 
 resource "kustomization_resource" "namespacedco" {
-	manifest = data.kustomization_build.test.manifests["test.example.com_v1alpha1_Namespacedcrd|test-crd|namespacedco"]
+	manifest = data.kustomization_build.test.manifests["test.example.com_~V_Namespacedcrd|test-crd|namespacedco"]
 }
 
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-crd"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-crd"]
 }
 `
 }
@@ -501,8 +501,8 @@ func TestAccResourceKustomization_webhook(t *testing.T) {
 			//
 			// Test state import
 			{
-				ResourceName:      "kustomization_resource.test[\"admissionregistration.k8s.io_v1_ValidatingWebhookConfiguration|~X|pod-policy.example.com\"]",
-				ImportStateId:     "admissionregistration.k8s.io_v1_ValidatingWebhookConfiguration|~X|pod-policy.example.com",
+				ResourceName:      "kustomization_resource.test[\"admissionregistration.k8s.io_~V_ValidatingWebhookConfiguration|~X|pod-policy.example.com\"]",
+				ImportStateId:     "admissionregistration.k8s.io_~V_ValidatingWebhookConfiguration|~X|pod-policy.example.com",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -513,7 +513,7 @@ func TestAccResourceKustomization_webhook(t *testing.T) {
 func testAccResourceKustomizationConfig_webhook(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "webhook" {
-	manifest = data.kustomization_build.test.manifests["admissionregistration.k8s.io_v1_ValidatingWebhookConfiguration|~X|pod-policy.example.com"]
+	manifest = data.kustomization_build.test.manifests["admissionregistration.k8s.io_~V_ValidatingWebhookConfiguration|~X|pod-policy.example.com"]
 }
 `
 }
@@ -559,15 +559,15 @@ func TestAccResourceKustomization_transformerConfigs(t *testing.T) {
 func testAccResourceKustomizationConfig_transformerConfigs(path string) string {
 	return testAccDataSourceKustomizationConfig_basic(path) + `
 resource "kustomization_resource" "ns" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Namespace|~X|test-transformer-config"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Namespace|~X|test-transformer-config"]
 }
 
 resource "kustomization_resource" "svc" {
-	manifest = data.kustomization_build.test.manifests["~G_v1_Service|test-transformer-config|test"]
+	manifest = data.kustomization_build.test.manifests["~G_~V_Service|test-transformer-config|test"]
 }
 
 resource "kustomization_resource" "dep1" {
-	manifest = data.kustomization_build.test.manifests["apps_v1_Deployment|test-transformer-config|test"]
+	manifest = data.kustomization_build.test.manifests["apps_~V_Deployment|test-transformer-config|test"]
 }
 `
 }
