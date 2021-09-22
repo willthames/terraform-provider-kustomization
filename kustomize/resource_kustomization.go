@@ -457,7 +457,7 @@ func kustomizationResourceImport(d *schema.ResourceData, m interface{}) ([]*sche
 
 	// "|" must match resid.separator
 	if len(strings.Split(d.Id(), "|")) != 3 {
-		return nil, logError(fmt.Errorf("invalid ID: %q, valid IDs look like: \"~G_v1_Namespace|~X|example\"", d.Id()))
+		return nil, logError(fmt.Errorf("invalid ID: %q, valid IDs look like: \"~G_~V_Namespace|~X|example\"", d.Id()))
 	}
 
 	rid := resid.FromString(d.Id())

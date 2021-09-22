@@ -47,10 +47,22 @@ provider "kustomization" {
 
 ## Imports
 
-To import existing Kubernetes resources into the Terraform state, use a command like below and replace `apps_v1_Deployment|test-basic|test` accordingly.
+To import existing Kubernetes resources into the Terraform state, use a command like below and replace `apps_v1_Deployment|test-namespace|test-deployment` accordingly.
+
+Resource IDs no longer contain a version (to allow for easier version upgrades) - `~V` is used
+instead. The version is used in the import source to find the resource to import.
 
 -> Please note the single quotes required for most shells.
 
 ```
-terraform import 'kustomization_resource.test["apps_v1_Deployment|test-basic|test"]' 'apps_v1_Deployment|test-basic|test'
+terraform import 'kustomization_resource.test["apps_~V_Deployment|test-namespace|test-deployment"]' 'apps_v1_Deployment|test-namespace|test-deployment'
+```
+
+## Upgrading from earlier versions
+
+```
+terraform state list | while read line; do
+  newstate=$(echo $line | sed 's/_v[^_]*_/_~V_/')
+  terraform state mv $line $newstate
+done
 ```
