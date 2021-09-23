@@ -196,12 +196,12 @@ func kustomizationResourceDiff(d *schema.ResourceDiff, m interface{}) error {
 		return nil
 	}
 
-	srcJSON := originalJSON.(string)
-	if srcJSON == "" {
+	desiredJSON := modifiedJSON.(string)
+	if desiredJSON == "" {
 		return nil
 	}
 
-	u, err := parseJSON(srcJSON)
+	u, err := parseJSON(desiredJSON)
 	if err != nil {
 		return logError(fmt.Errorf("JSON parse error: %s", err))
 	}
