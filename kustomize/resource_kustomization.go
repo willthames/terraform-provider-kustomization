@@ -225,10 +225,8 @@ func kustomizationResourceDiff(d *schema.ResourceDiff, m interface{}) error {
 		true,
 		m)
 	if err != nil {
-		return logErrorForResource(
-			u,
-			fmt.Errorf("getOriginalModifiedCurrent failed: %s", err),
-		)
+		d.ForceNew("manifest")
+		return nil
 	}
 
 	patch, patchType, err := getPatch(u.GroupVersionKind(), original, modified, current)
