@@ -1,4 +1,4 @@
-module github.com/kbst/terraform-provider-kustomize
+module github.com/Skedulo/terraform-provider-kustomize
 
 go 1.12
 

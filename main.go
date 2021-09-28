@@ -5,9 +5,9 @@ import (
 	"flag"
 	"log"
 
+	"github.com/Skedulo/terraform-provider-kustomize/kustomize"
 	"github.com/hashicorp/terraform-plugin-sdk/plugin"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/kbst/terraform-provider-kustomize/kustomize"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	if debugMode {
-		err := plugin.Debug(context.Background(), "registry.terraform.io/kbst/kustomization", opts)
+		err := plugin.Debug(context.Background(), "registry.terraform.io/Skedulo/kustomization", opts)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
