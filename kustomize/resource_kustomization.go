@@ -285,7 +285,7 @@ func kustomizationResourceExists(d *schema.ResourceData, m interface{}) (bool, e
 		return false, logError(fmt.Errorf("JSON parse error: %s", err))
 	}
 
-	mapping, err := mapper.RESTMapping(u.GroupVersionKind().GroupKind(), u.GroupVersionKind().Version)
+	mappings, err := mapper.RESTMappings(u.GroupVersionKind().GroupKind())
 	if err != nil {
 		if k8smeta.IsNoMatchError(err) {
 			// If the Kind does not exist in the K8s API,
@@ -296,7 +296,7 @@ func kustomizationResourceExists(d *schema.ResourceData, m interface{}) (bool, e
 	}
 
 	_, err = client.
-		Resource(mapping.Resource).
+		Resource(mappings[0].Resource).
 		Namespace(u.GetNamespace()).
 		Get(context.TODO(), u.GetName(), k8smetav1.GetOptions{})
 	if err != nil {
@@ -392,7 +392,9 @@ func kustomizationResourceDelete(d *schema.ResourceData, m interface{}) error {
 		return logError(fmt.Errorf("JSON parse error: %s", err))
 	}
 
-	mapping, err := mapper.RESTMapping(u.GroupVersionKind().GroupKind(), u.GroupVersionKind().Version)
+	// look for all versions of the GroupKind in case the resource uses a
+	// version that is no longer current
+	mappings, err := mapper.RESTMappings(u.GroupVersionKind().GroupKind())
 	if err != nil {
 		if k8smeta.IsNoMatchError(err) {
 			// If the Kind does not exist in the K8s API,
@@ -406,7 +408,7 @@ func kustomizationResourceDelete(d *schema.ResourceData, m interface{}) error {
 	name := u.GetName()
 
 	err = client.
-		Resource(mapping.Resource).
+		Resource(mappings[0].Resource).
 		Namespace(namespace).
 		Delete(context.TODO(), name, k8smetav1.DeleteOptions{})
 	if err != nil {
@@ -428,7 +430,7 @@ func kustomizationResourceDelete(d *schema.ResourceData, m interface{}) error {
 		Timeout: d.Timeout(schema.TimeoutDelete),
 		Refresh: func() (interface{}, string, error) {
 			resp, err := client.
-				Resource(mapping.Resource).
+				Resource(mappings[0].Resource).
 				Namespace(namespace).
 				Get(context.TODO(), name, k8smetav1.GetOptions{})
 			if err != nil {
